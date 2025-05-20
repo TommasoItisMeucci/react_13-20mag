@@ -7,6 +7,10 @@ function App() {
   const [alunni, setAlunni] = useState([]);
   const [caricamento, setCaricamento] = useState(false);
   const [inserisci, setInserisci] = useState(false);
+  const [nome, setNome] = useState("");
+  const [cognome, setCognome] = useState("");
+  const [nomeErr, setNomeErr] = useState("");
+  const [cognomeErr, setCognomeErr] = useState("");
 
   async function caricaAlunni(){ //await - async
     /* modo senza async 
@@ -29,15 +33,26 @@ function App() {
   }
 
   async function salvaAlunni() {
+    if(nome === ""){
+      setNomeErr("Nome Obbligatorio")
+      return
+    }
+    if(cognome === ""){
+      setCognomeErr("Cognome Obbligatorio")
+      return
+    }
     const data = await fetch("http://localhost:8080/alunni", {
       method:"POST", 
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({nome : "guido", cognome : "lauto"})
+      body: JSON.stringify({nome : nome, cognome : cognome})
     });
+    setNome("");
+    setNomeErr("");
+    setCognome("");
+    setCognomeErr("");
     setInserisci(false);
     caricaAlunni();
   }
-
 
   return (
     <div className="App">
@@ -47,10 +62,12 @@ function App() {
           {inserisci ? (
             <div>
               <h5>nome:</h5>
-              <input type="text"></input>
+                <input onChange={(e) => setNome(e.target.value)} type="text"></input>
+                {nomeErr !== "" && <div>{nomeErr}</div>}
               <h5>cognome:</h5>
-              <input type="text"></input><br/>
-              <button onClick={salvaAlunni}>salva</button><br/>
+                <input onChange={(e) => setCognome(e.target.value)} type="text"></input><br/><br/>
+                {cognomeErr !== "" && <div>{cognomeErr}</div>}
+              <button onClick={salvaAlunni}>salva</button><br/><br/>
               <button onClick={() => setInserisci(false)}>anulla</button>
             </div>
           ):(
