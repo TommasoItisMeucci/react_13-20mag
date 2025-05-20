@@ -41,7 +41,7 @@ class AlunniController{
     $data = json_decode($request->getBody()->getContents(), true);
     $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
     $stmt = $mysqli_connection->prepare("UPDATE alunni SET nome = ?, cognome = ? where id = ?");
-    $stmt->bind_param("ssi", $data['nome'], $data['cognome'], $data['id']);
+    $stmt->bind_param("ssi", $data['nome'], $data['cognome'], $args['id']);
     $stmt->execute();
 
     $response->getBody()->write($data["nome"]);
